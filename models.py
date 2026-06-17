@@ -14,7 +14,8 @@ class Customer:
         self.purchase_history = []
 
     def is_verified(self):
-        pass  # TODO: implement in Part 3
+        # A customer is verified if they have at least one past purchase
+        return len(self.purchase_history) > 0
 
 
 class MenuItem:
@@ -30,13 +31,20 @@ class Menu:
         self.items = []
 
     def add_item(self, item):
-        pass  # TODO: implement in Part 3
+        # Add a MenuItem to the menu
+        self.items.append(item)
 
     def filter_by_category(self, category):
-        pass  # TODO: implement in Part 3
+        # Return only items that match the given category string
+        result = []
+        for item in self.items:
+            if item.category == category:
+                result.append(item)
+        return result
 
     def get_all_items(self):
-        pass  # TODO: implement in Part 3
+        # Return the full list of menu items
+        return self.items
 
 
 class Order:
@@ -45,10 +53,52 @@ class Order:
         self.items = []
 
     def add_item(self, item):
-        pass  # TODO: implement in Part 3
+        # Add a MenuItem to this order
+        self.items.append(item)
 
     def compute_total(self):
-        pass  # TODO: implement in Part 3
+        # Sum the price of every item in the order
+        total = 0
+        for item in self.items:
+            total += item.price
+        return total
 
     def get_summary(self):
-        pass  # TODO: implement in Part 3
+        # Return a readable string describing the order
+        item_names = []
+        for item in self.items:
+            item_names.append(item.name)
+        return (
+            f"Order for {self.customer.name}: "
+            f"{', '.join(item_names)} — "
+            f"Total: ${self.compute_total():.2f}"
+        )
+
+
+if __name__ == "__main__":
+    print("=== Testing Customer ===")
+    customer = Customer("Alex")
+    print("Verified (no history):", customer.is_verified())
+    customer.purchase_history.append("order_001")
+    print("Verified (with history):", customer.is_verified())
+
+    print("\n=== Testing Menu ===")
+    menu = Menu()
+    menu.add_item(MenuItem("Spicy Burger", 8.99, "Mains", 4.5))
+    menu.add_item(MenuItem("Veggie Wrap", 7.49, "Mains", 4.1))
+    menu.add_item(MenuItem("Large Soda", 2.49, "Drinks", 3.8))
+    menu.add_item(MenuItem("Chocolate Cake", 4.99, "Desserts", 4.8))
+
+    print("All items:")
+    for item in menu.get_all_items():
+        print(" -", item.name)
+
+    print("Filtered (Mains):")
+    for item in menu.filter_by_category("Mains"):
+        print(" -", item.name)
+
+    print("\n=== Testing Order ===")
+    order = Order(customer)
+    order.add_item(MenuItem("Spicy Burger", 8.99, "Mains", 4.5))
+    order.add_item(MenuItem("Large Soda", 2.49, "Drinks", 3.8))
+    print("Summary:", order.get_summary())
